@@ -65,7 +65,7 @@ bool calc(const int begin, const int end, int fl, char *err, bool output) {
 
 void *calcthread(void *arg) {
   struct calcargs *args = arg;
-  char err[AS_MAXCH];
+  char err[AS_MAXCH] = "";
   if (!calc(args->begin, args->end, args->fl, err, args->output)) {
     fprintf(stderr, "calculation failed (begin=%d, end=%d, err=%s)\n",
             args->begin, args->end, err);
@@ -78,7 +78,7 @@ void runcalc(int fl, int threads, bool output) {
   const int end = 2488069;   // + .5 = 2100-01-01 00:00:00 UT
 
   if (threads == 1) {
-    char err[AS_MAXCH];
+    char err[AS_MAXCH] = "";
     if (!calc(begin, end, fl, err, output)) {
       fprintf(stderr, "calc error: %s", err);
       failure();
@@ -147,11 +147,11 @@ int main(int argc, char const *argv[]) {
   int threads = 1;
   bool output = false;
   for (size_t i = 1; i < argc; i++) {
-    if (strncmp(argv[i], "-jpl", 4) == 0) {
+    if (strcmp(argv[i], "-jpl") == 0) {
       fl |= SEFLG_JPLEPH;  // set JPLEPH
       fl &= ~SEFLG_SWIEPH; // remove SWIEPH
     }
-    if (strncmp(argv[i], "-threads", 8) == 0) {
+    if (strcmp(argv[i], "-threads") == 0) {
       i++;
       if (i == argc) {
         fprintf(stderr, "no number of threads given");
@@ -164,7 +164,7 @@ int main(int argc, char const *argv[]) {
       }
       threads = n;
     }
-    if (strncmp(argv[i], "-output", 7) == 0) {
+    if (strcmp(argv[i], "-output") == 0) {
       output = true;
     }
   }
